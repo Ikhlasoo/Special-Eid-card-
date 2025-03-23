@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eid Mubarak Surprise</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+      background-image: url('background.png'); /* Your background image */
+      background-size: cover;
+      background-position: center;
+    }
+    .screen {
+      text-align: center;
+      display: none;
+      background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background for readability */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .screen.active {
+      display: block;
+    }
+    button {
+      background-color: #2c7a51;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #239b56;
+    }
+    .cloud {
+      width: 80px;
+      height: 80px;
+      position: absolute;
+      cursor: pointer;
+    }
+    .fireworks {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    #camera video {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 10px;
+    }
+    #screen6 h1 {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+      padding: 10px;
+      border-radius: 10px;
+    }
+    #screen7 video {
+      width: 100%;
+      max-width: 800px;
+      border-radius: 10px;
+    }
+    #message {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+      padding: 10px;
+      border-radius: 10px;
+      display: none;
+    }
+    #selfie-message {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    #cloud-counter {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Music -->
+  <audio id="background-music" loop>
+    <source src="music.mp3" type="audio/mpeg"> <!-- Your music file -->
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Screen 1: Are You Ready? -->
+  <div id="screen1" class="screen active">
+    <h1>Are you ready?</h1>
+    <button onclick="startStory()">Yes, I am ready</button>
+  </div>
+
+  <!-- Screen 2: Story -->
+  <div id="screen2" class="screen">
+    <p id="story-line"></p>
+  </div>
+
+  <!-- Screen 3: Let's Find the Moon -->
+  <div id="screen3" class="screen">
+    <h1>Let's find the moon!</h1>
+    <button onclick="startClouds()">Yes, I am ready</button>
+  </div>
+
+  <!-- Screen 4: Clouds -->
+  <div id="screen4" class="screen">
+    <p>Remove the clouds</p>
+    <div id="cloud-container"></div>
+    <div id="cloud-counter">Clouds left: 20</div>
+  </div>
+
+  <!-- Screen 5: Message After Clouds -->
+  <div id="message">
+    The moon is nowhere to be found. That's a bit concerning.
+  </div>
+
+  <!-- Screen 6: Camera -->
+  <div id="screen5" class="screen">
+    <h1>Let's find the moon through your camera!</h1>
+    <div id="camera">
+      <video id="video" autoplay></video>
+      <button onclick="takeSelfie()">Click Selfie</button>
+    </div>
+  </div>
+
+  <!-- Screen 7: Selfie Message -->
+  <div id="screen6" class="screen">
+    <div id="selfie-container"></div>
+    <div id="selfie-message">The moon has been found! Eid Mubarak!</div>
+    <canvas class="fireworks" id="fireworks"></canvas>
+  </div>
+
+  <!-- Screen 8: Final Video -->
+  <div id="screen7" class="screen">
+    <video id="eid-video" autoplay muted loop>
+      <source src=eid_card.mp4 type="video/mp4"> <!-- Your video file -->
+      Your browser does not support the video tag.
+    </video>
+    <button onclick="downloadVideo()">Download Video</button>
+    <p id="personalized-message">Dear [Friend's Name], thank you for being an amazing friend. Eid Mubarak!</p>
+  </div>
+
+  <!-- Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+  <script>
+    // Background Music
+    const music = document.getElementById('background-music');
+
+    // Screen 1: Start Story
+    function startStory() {
+      music.play(); // Start playing music when user clicks "Yes, I am ready"
+      document.getElementById('screen1').classList.remove('active');
+      document.getElementById('screen2').classList.add('active');
+      showStory();
+    }
+
+    // Screen 2: Show Story Line by Line
+    const storyLines = [
+      "Asslam-o-Alaikum ...",
+      "I made this special Card for YOu...",
+      "As u know i am not a pro but i tried my best ...",
+      "you are the sweetest person i have met in my life ...",
+      "I owe you to much that i dont think i can repay in this world ...",
+      "So i Pray for You to be succefull in other life after death ...",
+      "Soo just to let you know i'm Here ...",
+      "YOu need anything, you wana talk about anything...",
+      "I'm Here ! i have never say (No) to you ...",
+      "and will Not Inshallah ...",
+      "Now here's a Fun game for you hope you enjoy :) ..."
+    ];
+    let currentLine = 0;
+
+    function showStory() {
+      const storyLine = document.getElementById('story-line');
+      if (currentLine < storyLines.length) {
+        storyLine.textContent = storyLines[currentLine];
+        currentLine++;
+        setTimeout(showStory, 4000); // Each line stays for 4 seconds
+      } else {
+        document.getElementById('screen2').classList.remove('active');
+        document.getElementById('screen3').classList.add('active');
+      }
+    }
+
+    // Screen 3: Start Clouds
+    function startClouds() {
+      document.getElementById('screen3').classList.remove('active');
+      document.getElementById('screen4').classList.add('active');
+      createClouds();
+    }
+
+    // Screen 4: Create Clouds
+    function createClouds() {
+      const cloudContainer = document.getElementById('cloud-container');
+      const cloudCounter = document.getElementById('cloud-counter');
+      let cloudsLeft = 20;
+
+      for (let i = 0; i < cloudsLeft; i++) {
+        const cloud = document.createElement('img');
+        cloud.src = 'cloud.png'; // Your cloud image
+        cloud.classList.add('cloud');
+        cloud.style.top = `${Math.random() * 80}vh`; // Random vertical position
+        cloud.style.left = `${Math.random() * 80}vw`; // Random horizontal position
+        cloud.onclick = () => {
+          cloud.remove(); // Remove the cloud when clicked
+          cloudsLeft--;
+          cloudCounter.textContent = `Clouds left: ${cloudsLeft}`;
+          if (cloudsLeft === 0) {
+            // If all clouds are removed, show the message
+            const message = document.getElementById('message');
+            message.style.display = 'block';
+            setTimeout(() => {
+              message.style.display = 'none';
+              document.getElementById('screen4').classList.remove('active');
+              document.getElementById('screen5').classList.add('active');
+              startCamera();
+            }, 4000); // Show message for 4 seconds
+          }
+        };
+        cloudContainer.appendChild(cloud); // Add the cloud to the container
+      }
+    }
+
+    // Screen 5: Start Camera
+    function startCamera() {
+      const video = document.getElementById('video');
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+        .then(stream => video.srcObject = stream)
+        .catch(err => console.error('Error accessing camera:', err));
+    }
+
+    // Screen 5: Take Selfie
+    function takeSelfie() {
+      const video = document.getElementById('video');
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      video.srcObject.getTracks().forEach(track => track.stop());
+
+      // Display the selfie and message
+      const selfieContainer = document.getElementById('selfie-container');
+      selfieContainer.innerHTML = `<img src="${canvas.toDataURL()}" alt="Selfie" style="max-width: 100%; border-radius: 10px;">`;
+      document.getElementById('screen5').classList.remove('active');
+      document.getElementById('screen6').classList.add('active');
+
+      // Save the selfie image
+      saveSelfie(canvas.toDataURL());
+
+      // Start confetti and fireworks after 2 seconds
+      setTimeout(() => {
+        startConfetti();
+        startFireworks();
+      }, 2000);
+    }
+
+    // Save Selfie Image
+    function saveSelfie(imageData) {
+      const link = document.createElement('a');
+      link.href = imageData;
+      link.download = 'Selfie.png';
+      link.click();
+    }
+
+    // Screen 6: Confetti Animation
+    function startConfetti() {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 }
+      });
+    }
+
+    // Screen 6: Fireworks Animation
+    function startFireworks() {
+      const canvas = document.getElementById('fireworks');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      function firework() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const radius = Math.random() * 3 + 1;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
+        ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        ctx.fill();
+        requestAnimationFrame(firework);
+      }
+      firework();
+
+      setTimeout(() => {
+        document.getElementById('screen6').classList.remove('active');
+        document.getElementById('screen7').classList.add('active');
+      }, 5000); // Celebration lasts for 5 seconds
+    }
+
+    // Screen 7: Download Video
+    function downloadVideo() {
+      const video = document.getElementById('eid-video');
+      const link = document.createElement('a');
+      link.href = video.src;
+      link.download = 'Eid_Video.mp4';
+      link.click();
+    }
+
+    // Personalized Message
+    const friendName = "Faiza"; // Replace with your friend's name
+    document.getElementById('personalized-message').textContent = `Dear ${friendName}, thank you for being an amazing friend and my moon in dark nights! Eid Mubarak!`;
+  </script>
+</body>
+</html>
