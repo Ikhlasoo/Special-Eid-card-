@@ -113,6 +113,23 @@
       font-weight: bold;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     }
+    /* Add this for the scrollable message */
+    #personalized-message {
+      color: white;
+      font-size: 1.2rem; /* Slightly smaller font for better readability */
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 80%; /* Limit the width */
+      max-height: 100px; /* Limit the height */
+      overflow-y: auto; /* Add a scrollbar if the content overflows */
+      white-space: normal; /* Allow text to wrap */
+      line-height: 1.5; /* Improve readability */
+      margin-top: 20px; /* Add some space above the message */
+    }
   </style>
 </head>
 <body>
@@ -148,7 +165,7 @@
 
   <!-- Screen 5: Message After Clouds -->
   <div id="message">
-    The moon is nowhere to be found. That's a bit concerning.
+    The moon is no where to be found. That's a bit concerning.
   </div>
 
   <!-- Screen 6: Camera -->
@@ -170,11 +187,11 @@
   <!-- Screen 8: Final Video -->
   <div id="screen7" class="screen">
     <video id="eid-video" autoplay muted loop>
-      <source src=eid_card.mp4 type="video/mp4"> <!-- Your video file -->
+      <source src="eid_card.mp4" type="video/mp4"> <!-- Your video file -->
       Your browser does not support the video tag.
     </video>
     <button onclick="downloadVideo()">Download Video</button>
-    <p id="personalized-message">Dear [Friend's Name], thank you for being an amazing friend. Eid Mubarak!</p>
+    <p id="personalized-message">Dear Faiza, thank you for being an amazing friend and my moon in dark nights! Eid Mubarak!</p>
   </div>
 
   <!-- Confetti Library -->
@@ -195,7 +212,7 @@
     // Screen 2: Show Story Line by Line
     const storyLines = [
       "Asslam-o-Alaikum ...",
-      "I made this special Card for YOu...",
+      "I made this special Card for You...",
       "As u know i am not a pro but i tried my best ...",
       "you are the sweetest person i have met in my life ...",
       "I owe you to much that i dont think i can repay in this world ...",
@@ -344,10 +361,6 @@
       link.download = 'Eid_Video.mp4';
       link.click();
     }
-
-    // Personalized Message
-    const friendName = "Faiza"; // Replace with your friend's name
-    document.getElementById('personalized-message').textContent = `Dear ${friendName}, thank you for being an amazing friend and my moon in dark nights! Eid Mubarak!`;
   </script>
 </body>
 </html>
